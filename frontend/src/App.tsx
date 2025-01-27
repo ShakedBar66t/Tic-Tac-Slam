@@ -1,38 +1,57 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import GameGrid from "./components/GameGrid";
+
+interface Riddle {
+  points: number;
+  colCriteria: string[];
+  rowCriteria: string[];
+  grid: (string | null)[][];
+}
 
 const App: React.FC = () => {
-    const [riddle, setRiddle] = useState<any>(null);
+  const [riddle, setRiddle] = useState<Riddle | null>(null);
 
-    useEffect(() => {
-        axios.get("http://localhost:5001/riddle").then((response) => {
-            setRiddle(response.data);
-        });
-    }, []);
+  // Fetch the riddle data from the backend
+  const fetchRiddle = async () => {
+    try {
+      const response = await axios.get("http://localhost:5001/riddle");
+      setRiddle(response.data);
+    } catch (error) {
+      console.error("Error fetching riddle:", error);
+    }
+  };
 
-return (
-        <div className="p-6 bg-gray-50 min-h-screen">
-            <h1 className="text-3xl font-bold mb-8 text-center text-blue-600">
-                Tic-Tac-Slam
-            </h1>
-            {riddle ? (
-                <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto">
-                    {riddle.grid.map((row: string[], rowIndex: number) =>
-                        row.map((cell: string, colIndex: number) => (
-                            <div
-                                key={`${rowIndex}-${colIndex}`}
-                                className="bg-white border border-gray-300 p-6 rounded-lg shadow-md flex items-center justify-center text-lg font-semibold text-gray-700 hover:bg-blue-100 transition"
-                            >
-                                {cell}
-                            </div>
-                        ))
-                    )}
-                </div>
-            ) : (
-                <p className="text-center text-gray-500">Loading...</p>
-            )}
-        </div>
-    );
+  useEffect(() => {
+    fetchRiddle();
+  }, []);
+
+  // Handle guess submission
+  const handleGuessSubmit = (row: number, col: number, guess: string) => {
+    if (riddle) {
+      const updatedGrid = [...riddle.grid];
+      updatedGrid[row][col] = guess;
+
+      // Example: Add points if the guess is correct
+      const correctAnswer = true; // Replace with actual validation logic
+      const updatedPoints = correctAnswer ? riddle.points + 10 : riddle.points;
+
+      setRiddle({ ...riddle, grid: updatedGrid, points: updatedPoints });
+    }
+  };
+
+  return (
+    <div className="p-6 min-h-screen">
+      <h1 className="text-3xl font-bold mb-8 text-center text-blue-600">
+        Tic-Tac-Slam
+      </h1>
+      {riddle ? (
+        <GameGrid riddle={riddle} onSubmitGuess={handleGuessSubmit} />
+      ) : (
+        <p className="text-center text-gray-500">Loading today's riddle...</p>
+      )}
+    </div>
+  );
 };
 
 export default App;

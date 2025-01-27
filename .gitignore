@@ -1,0 +1,23 @@
+# Ignore node_modules
+node_modules/
+
+# Ignore build outputs
+dist/
+build/
+
+# Ignore environment variables
+.env
+
+# Ignore Firebase-related files
+.firebase/
+
+# Ignore logs
+*.log
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore specific package lock files if unnecessary
+yarn.lock
+pnpm-lock.yaml
