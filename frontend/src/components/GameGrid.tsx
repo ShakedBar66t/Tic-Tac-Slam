@@ -35,7 +35,7 @@ const GameGrid: React.FC<GameGridProps> = ({ riddle, onSubmitGuess }) => {
     <div className="max-w-lg mx-auto">
       {/* Grid Layout */}
       <div
-        className="grid gap-2"
+        className="grid gap-0.5"
         style={{
           gridTemplateColumns: "repeat(4, 1fr)", // 4 equal columns (including points and criteria)
         }}
@@ -43,9 +43,8 @@ const GameGrid: React.FC<GameGridProps> = ({ riddle, onSubmitGuess }) => {
         {/* Points Cell */}
         <div
           className="flex items-center justify-center rounded-lg font-bold text-lg text-blue-600"
-          style={{ aspectRatio: "1 / 1" }} // Makes the cell square
         >
-          Points: <span className="ml-2 ">{riddle.points}</span>
+          Points: <span className="ml-2">{riddle.points}</span>
         </div>
 
         {/* Column Criteria */}
@@ -53,12 +52,11 @@ const GameGrid: React.FC<GameGridProps> = ({ riddle, onSubmitGuess }) => {
           <div
             key={index}
             className="flex justify-center items-center rounded-lg"
-            style={{ aspectRatio: "1 / 1" }} // Makes the cell square
           >
             <img
               src={imgUrl}
               alt={`Column ${index + 1}`}
-              className="h-24 w-24 object-contain"
+              className=" object-contain"
             />
           </div>
         ))}
@@ -69,30 +67,49 @@ const GameGrid: React.FC<GameGridProps> = ({ riddle, onSubmitGuess }) => {
             {/* Row Criteria */}
             <div
               className="flex justify-center items-center rounded-lg"
-              style={{ aspectRatio: "1 / 1" }} // Makes the cell square
             >
               <img
                 src={riddle.rowCriteria[rowIndex]}
                 alt={`Row ${rowIndex + 1}`}
-                className="h-24 w-24 object-contain"
+                className="h-full w-full object-contain"
               />
             </div>
 
             {/* Grid Cells */}
             {row.map((cell: string | null, colIndex: number) => (
-              <div
+              <button
                 key={`${rowIndex}-${colIndex}`}
-                className={`bg-white border border-gray-300 rounded-lg shadow-md flex items-center justify-center text-lg font-semibold ${
+                className={`group relative w-full h-full rounded-lg border border-gray-300 shadow-md flex items-center justify-center ${
                   selectedCell?.row === rowIndex &&
                   selectedCell?.col === colIndex
                     ? "bg-blue-300"
                     : "hover:bg-blue-100"
                 }`}
-                style={{ aspectRatio: "1 / 1" }} // Makes the cell square
+                style={{ aspectRatio: "1 / 1" }} // Keeps the cell square
                 onClick={() => handleCellClick(rowIndex, colIndex)}
               >
-                {cell || ""}
-              </div>
+                {/* Inner div containing the avatar image and text */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  {/* Avatar Image */}
+                  <img
+                    src={
+                      cell
+                        ? "https://res.cloudinary.com/demo/image/upload/avatar.png" // Replace with your Cloudinary URL
+                        : "https://res.cloudinary.com/drld1bejg/image/upload/v1737972774/Tic-Tac-Slam/pppkdfibyg0bbjowpy6t.webp" // Default avatar
+                    }
+                    alt="player"
+                    className="w-full h-full opacity-90" // 
+                  />
+                  {/* Text below the image */}
+                  <p
+                    className={`text-lg font-semibold ${
+                      cell ? "text-black" : "text-gray-500"
+                    }`}
+                  >
+                    {cell || ""}
+                  </p>
+                </div>
+              </button>
             ))}
           </React.Fragment>
         ))}
