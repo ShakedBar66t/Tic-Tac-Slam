@@ -39,23 +39,23 @@ const Navbar: React.FC = () => {
         {/* Navigation Links */}
         <div
           className={`${
-            isMenuOpen ? "block" : "hidden md:block"
-          } absolute md:static top-[7.1rem] left-0 w-full md:w-auto bg-gradient-to-r from-orange-500 via-red-500 to-orange-500  md:bg-transparent p-4 md:p-0 md:flex space-y-2 md:space-y-0 md:space-x-4`}
+            isMenuOpen ? "block bg-gradient-to-r from-orange-500 via-red-500 to-orange-500" : "hidden md:block "
+          } absolute md:static top-[7.1rem] left-0 w-full md:w-auto   md:bg-transparent p-4 md:p-0 md:flex space-y-2 md:space-y-0 md:space-x-4`}
         >
           <a
-            href="#"
+            href="/"
             className="block text-white text-center md:inline-block hover:underline"
           >
             Home
           </a>
           <a
-            href="#"
+            href="/about"
             className="block text-white text-center md:inline-block hover:underline"
           >
             About
           </a>
           <a
-            href="#"
+            href="/contact"
             className="block text-white text-center md:inline-block hover:underline"
           >
             Contact

@@ -1,34 +1,25 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import GameGrid from "./components/GameGrid";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import { useFetchRiddle } from "./hooks/useFetchRiddle";
 
-interface Riddle {
-  points: number;
-  colCriteria: string[];
-  rowCriteria: string[];
-  grid: (string | null)[][];
-}
+// Initialize React Query Client (Move it here, outside the component)
+const queryClient = new QueryClient();
 
 const App: React.FC = () => {
-  const [riddle, setRiddle] = useState<Riddle | null>(null);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppContent />
+    </QueryClientProvider>
+  );
+};
 
-  // Fetch the riddle data from the backend
-  const fetchRiddle = async () => {
-    try {
-      const response = await axios.get("http://localhost:5001/riddle");
-      setRiddle(response.data);
-    } catch (error) {
-      console.error("Error fetching riddle:", error);
-    }
-  };
+// Separate the app logic into a new component to ensure QueryClientProvider is applied first
+const AppContent: React.FC = () => {
+  const { data: riddle, isLoading, error } = useFetchRiddle();
 
-  useEffect(() => {
-    fetchRiddle();
-  }, []);
-
-  // Handle guess submission
   const handleGuessSubmit = (row: number, col: number, guess: string) => {
     if (riddle) {
       const updatedGrid = [...riddle.grid];
@@ -38,18 +29,21 @@ const App: React.FC = () => {
       const correctAnswer = true; // Replace with actual validation logic
       const updatedPoints = correctAnswer ? riddle.points + 10 : riddle.points;
 
-      setRiddle({ ...riddle, grid: updatedGrid, points: updatedPoints });
+      riddle.grid = updatedGrid;
+      riddle.points = updatedPoints;
     }
   };
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="pt-20 p-6 min-h-screen">
-        {riddle ? (
-          <GameGrid riddle={riddle} onSubmitGuess={handleGuessSubmit} />
-        ) : (
+      <main className="flex-grow pt-20 p-6">
+        {isLoading ? (
           <p className="text-center text-gray-500">Loading today's riddle...</p>
+        ) : error ? (
+          <p className="text-center text-red-500">Failed to load riddle.</p>
+        ) : (
+          <GameGrid riddle={riddle} onSubmitGuess={handleGuessSubmit} />
         )}
       </main>
       <Footer />
