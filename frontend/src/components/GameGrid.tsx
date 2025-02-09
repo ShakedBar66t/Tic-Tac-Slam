@@ -41,23 +41,14 @@ const GameGrid: React.FC<GameGridProps> = ({ riddle, onSubmitGuess }) => {
         }}
       >
         {/* Points Cell */}
-        <div
-          className="flex items-center justify-center rounded-lg font-bold text-lg text-blue-600"
-        >
+        <div className="flex items-center justify-center rounded-lg font-bold text-lg text-blue-600">
           Points: <span className="ml-2">{riddle.points}</span>
         </div>
 
         {/* Column Criteria */}
         {riddle.colCriteria.map((imgUrl: string, index: number) => (
-          <div
-            key={index}
-            className="flex justify-center items-center rounded-lg"
-          >
-            <img
-              src={imgUrl}
-              alt={`Column ${index + 1}`}
-              className=" object-contain"
-            />
+          <div key={index} className="flex justify-center items-center rounded-lg">
+            <img src={imgUrl} alt={`Column ${index + 1}`} className="object-contain" />
           </div>
         ))}
 
@@ -65,9 +56,7 @@ const GameGrid: React.FC<GameGridProps> = ({ riddle, onSubmitGuess }) => {
         {riddle.grid.map((row: (string | null)[], rowIndex: number) => (
           <React.Fragment key={rowIndex}>
             {/* Row Criteria */}
-            <div
-              className="flex justify-center items-center rounded-lg"
-            >
+            <div className="flex justify-center items-center rounded-lg">
               <img
                 src={riddle.rowCriteria[rowIndex]}
                 alt={`Row ${rowIndex + 1}`}
@@ -80,35 +69,23 @@ const GameGrid: React.FC<GameGridProps> = ({ riddle, onSubmitGuess }) => {
               <button
                 key={`${rowIndex}-${colIndex}`}
                 className={`group relative w-full h-full rounded-lg border border-gray-300 shadow-md flex items-center justify-center ${
-                  selectedCell?.row === rowIndex &&
-                  selectedCell?.col === colIndex
+                  selectedCell?.row === rowIndex && selectedCell?.col === colIndex
                     ? "bg-blue-300"
                     : "hover:bg-blue-100"
                 }`}
                 style={{ aspectRatio: "1 / 1" }} // Keeps the cell square
                 onClick={() => handleCellClick(rowIndex, colIndex)}
               >
-                {/* Inner div containing the avatar image and text */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  {/* Avatar Image */}
+                {/* Display player name if selected, otherwise show default image */}
+                {cell ? (
+                  <span className="text-black font-bold">{cell}</span> // Show player name
+                ) : (
                   <img
-                    src={
-                      cell
-                        ? "https://res.cloudinary.com/demo/image/upload/avatar.png" // Replace with your Cloudinary URL
-                        : "https://res.cloudinary.com/drld1bejg/image/upload/v1737972774/Tic-Tac-Slam/pppkdfibyg0bbjowpy6t.webp" // Default avatar
-                    }
-                    alt="player"
-                    className="w-full h-full opacity-90" // 
+                    src="https://res.cloudinary.com/drld1bejg/image/upload/v1737972774/Tic-Tac-Slam/pppkdfibyg0bbjowpy6t.webp"
+                    alt="default avatar"
+                    className="w-full h-full opacity-90"
                   />
-                  {/* Text below the image */}
-                  <p
-                    className={`text-lg font-semibold ${
-                      cell ? "text-black" : "text-gray-500"
-                    }`}
-                  >
-                    {cell || ""}
-                  </p>
-                </div>
+                )}
               </button>
             ))}
           </React.Fragment>
